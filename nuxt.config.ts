@@ -24,4 +24,24 @@ export default defineNuxtConfig({
       }),
     ],
   },
+  runtimeConfig: {
+    public: {
+      apiBase: process.env.NUXT_PUBLIC_API_BASE, // 服务器地址
+    },
+  },
+  nitro: {
+    devProxy: {
+      "/api": {
+        target: "http://localhost:4000", // 这里是接口地址
+        changeOrigin: true,
+        prependPath: true,
+      },
+    },
+    // 该配置用于服务端请求转发
+    // routeRules: {
+    //   "/api/**": {
+    //     proxy: "http://localhost:4000/**",
+    //   },
+    // },
+  },
 })
