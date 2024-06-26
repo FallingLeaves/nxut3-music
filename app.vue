@@ -1,0 +1,15 @@
+<template>
+  <div>
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+  </div>
+</template>
+
+<script setup lang="ts">
+useHead({
+  title: "nuxt music",
+  meta: [{ name: "description", content: "My amazing site." }],
+  script: [{ innerHTML: "console.log('Hello world')" }],
+})
+</script>
