@@ -1,7 +1,64 @@
 <script setup lang="ts">
-import { getRecommendPlaylist } from "~/api/playList"
+import { getNewAlbums } from "~/api/album"
+import { getToplistOfArtists } from "~/api/artist"
+import { getRecommendPlaylist, getToplists } from "~/api/playList"
 
 const { data: recommendPlaylist } = await getRecommendPlaylist({ limit: 10 })
+
+// 偶现topArtistList数据为空
+// const { data: topArtistList } = await useAsyncData(
+//   "top-artist",
+//   async () => {
+//     const { data } = await getToplistOfArtists()
+//     const list = data.value?.list?.artists || []
+
+//     return list
+//   },
+//   {
+//     transform(list) {
+//       let indexs: number[] = []
+//       while (indexs.length < 6) {
+//         let tmp = ~~(Math.random() * 100)
+//         if (!indexs.includes(tmp)) indexs.push(tmp)
+//       }
+
+//       return list.filter((l, index) => indexs.includes(index))
+//     },
+//   }
+// )
+
+const getRandomArtist = (list: any[]) => {
+  let indexs: number[] = []
+  while (indexs.length < 6) {
+    let tmp = ~~(Math.random() * 100)
+    if (!indexs.includes(tmp)) indexs.push(tmp)
+  }
+  return list.filter((l, index) => indexs.includes(index))
+}
+
+// TS transform类型报错
+// const topArtistList = await getToplistOfArtists(null, {
+//   transform(res) {
+//     const {
+//       list: { artists },
+//     } = res
+//     return getRandomArtist(artists)
+//   },
+// })
+
+const { data: allArtistList } = await getToplistOfArtists()
+
+const topArtistList = computed(() => {
+  return getRandomArtist(allArtistList.value.list.artists)
+})
+
+const { data: albumNewestlist } = await getNewAlbums({ limit: 10, area: "ALL" })
+
+const { data: allTopList } = await getToplists()
+
+const top5List = computed(() => {
+  return allTopList.value.list.slice(0, 5)
+})
 </script>
 
 <template>
@@ -24,6 +81,40 @@ const { data: recommendPlaylist } = await getRecommendPlaylist({ limit: 10 })
         :type="'playlist'"
         :items="recommendPlaylist?.result || []"
         sub-text="copywriter"
+      />
+    </div>
+    <div class="index-row">
+      <div class="title">推荐艺人</div>
+      <!-- ClientOnly 随机值导致服务端和客户端topArtistList不一致 Hydration completed but contains mismatches -->
+      <ClientOnly>
+        <CoverRow
+          type="artist"
+          :column-number="6"
+          :items="topArtistList || []"
+        />
+      </ClientOnly>
+    </div>
+    <div class="index-row">
+      <div class="title">
+        新专速递
+        <NuxtLink to="/album/newest">查看全部</NuxtLink>
+      </div>
+      <CoverRow
+        type="album"
+        :items="albumNewestlist?.albums || []"
+        sub-text="artist"
+      />
+    </div>
+    <div class="index-row">
+      <div class="title">
+        排行榜
+        <NuxtLink to="/explore?category=排行榜">查看全部</NuxtLink>
+      </div>
+      <CoverRow
+        type="playlist"
+        :items="top5List"
+        sub-text="updateFrequency"
+        :image-size="1024"
       />
     </div>
   </div>

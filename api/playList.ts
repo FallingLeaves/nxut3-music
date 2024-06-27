@@ -31,3 +31,23 @@ export function getRecommendPlaylist(
 ) {
   return useHttp.get<RecommendRes>("/personalized", params, { ...options })
 }
+
+interface TopItem {
+  updateFrequency: string
+  coverImgUrl: string
+  name: string
+  id: number
+}
+
+interface TopListRes {
+  code: number
+  list: TopItem[]
+}
+
+/**
+ * 所有榜单
+ * 说明 : 调用此接口,可获取所有榜单 接口地址 : /toplist
+ */
+export function getToplists(options?: UseFetchOptions<TopListRes>) {
+  return useHttp.get<TopListRes>("/toplist", undefined, { ...options })
+}

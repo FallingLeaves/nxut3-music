@@ -1,8 +1,12 @@
 <template>
   <div class="navbar-view">
     <div class="navigation-buttons">
-      <button-icon><svg-icon icon-class="arrow-left" /></button-icon>
-      <button-icon><svg-icon icon-class="arrow-right" /></button-icon>
+      <button-icon @click.native="go('back')">
+        <svg-icon icon-class="arrow-left" />
+      </button-icon>
+      <button-icon @click.native="go('forward')">
+        <svg-icon icon-class="arrow-right" />
+      </button-icon>
     </div>
     <div class="navigation-links">
       <NuxtLink to="/">首页</NuxtLink>
@@ -29,6 +33,11 @@ const keywords = ref("")
 const avatarUrl = computed(() => {
   return "http://s4.music.126.net/style/web2/img/default/default_avatar.jpg?param=60y60"
 })
+const router = useRouter()
+const go = (where: string) => {
+  if (where === "back") router.go(-1)
+  else router.go(1)
+}
 </script>
 
 <style lang="scss" scoped>

@@ -4,10 +4,16 @@
     :class="{ 'cover-hover': coverHover }"
     @mouseover="focus = true"
     @mouseleave="focus = false"
+    @click="clickCoverToPlay ? play() : goTo()"
   >
     <div class="cover-container">
       <div class="shade">
-        <button class="play-button" :style="playButtonStyles" v-show="focus">
+        <button
+          class="play-button"
+          :style="playButtonStyles"
+          v-show="focus"
+          @click.stop="play()"
+        >
           <svg-icon icon-class="play" />
         </button>
       </div>
@@ -85,6 +91,14 @@ const shadowStyles = computed(() => {
   }
   return styles
 })
+
+const play = () => {}
+
+const router = useRouter()
+
+const goTo = () => {
+  router.push(`${props.type}/${props.id}`)
+}
 </script>
 
 <style lang="scss" scoped>
