@@ -123,34 +123,38 @@ const loadingMore = ref(false)
 
 const { $request } = useNuxtApp()
 
-const getRecommendPlaylistHandle = async () => {
+const getRecommendPlaylistHandle = async (): Promise<ResData<"推荐歌单">> => {
   const params = { limit: 100 }
-  return (await $request(PLAYLIST_URL.recommend, {
+  // @ts-ignore
+  return await $request(PLAYLIST_URL.personalized, {
+    method: "GET",
     params,
-  })) as ResData<"推荐歌单">
+  })
 }
 
-const getHighQualityPlaylistHandle = async () => {
+const getHighQualityPlaylistHandle = async (): Promise<ResData<"精品歌单">> => {
   const len = playlist.value.length
   const before = len > 0 ? playlist.value[len - 1].updateTime : 0
   const params = { limit: 50, before }
-  return (await $request(PLAYLIST_URL.highquality, {
+  return await $request(PLAYLIST_URL.highquality, {
+    method: "GET",
     params,
-  })) as ResData<"精品歌单">
+  })
 }
 
-const getToplistsHandle = async () => {
-  return (await $request(PLAYLIST_URL.toplist)) as ResData<"排行榜">
+const getToplistsHandle = async (): Promise<ResData<"排行榜">> => {
+  return await $request(PLAYLIST_URL.toplist, { method: "GET" })
 }
 
-const getTopPlaylistHandle = async () => {
+const getTopPlaylistHandle = async (): Promise<TopPlayRes> => {
   const params = {
     cat: activeCategory.value,
     offset: playlist.value.length,
   }
-  return (await $request(PLAYLIST_URL.playlist, {
+  return await $request(PLAYLIST_URL.playlist, {
+    method: "GET",
     params,
-  })) as TopPlayRes
+  })
 }
 
 const getData = async () => {

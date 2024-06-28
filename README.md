@@ -1,3 +1,13 @@
+### 参考项目
+
+UI 借鉴 https://github.com/qier222/YesPlayMusic.git
+
+后端接口 https://gitee.com/davie/NeteaseCloudMusicApi.git
+
+---
+
+
+
 # Nuxt 3 Minimal Starter
 
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.

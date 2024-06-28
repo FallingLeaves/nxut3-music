@@ -1,10 +1,11 @@
 import type { UseFetchOptions } from "#app"
 
 export const PLAYLIST_URL = {
-  recommend: "/personalized",
+  personalized: "/personalized",
   toplist: "/toplist",
   highquality: "/top/playlist/highquality",
   playlist: "/top/playlist",
+  detail: "/playlist/detail",
 }
 
 interface Params {
@@ -36,7 +37,7 @@ export function getRecommendPlaylist(
   params?: Params,
   options?: UseFetchOptions<RecommendRes>
 ) {
-  return useHttp.get<RecommendRes>(PLAYLIST_URL.recommend, params, {
+  return useHttp.get<RecommendRes>(PLAYLIST_URL.personalized, params, {
     ...options,
   })
 }
@@ -138,5 +139,76 @@ export function getTopPlaylist(
 ) {
   return useHttp.get<TopPlayRes>(PLAYLIST_URL.playlist, params, {
     ...options,
+  })
+}
+
+export interface Track {
+  privilege?: any
+  fee: number
+  noCopyrightRcmd: any
+  id: number
+  playable?: boolean
+  reason?: string
+}
+
+export interface Privilege {
+  id: number
+}
+
+interface PlaylistDetail {
+  id: number
+  name: string
+  coverImgUrl: string
+  creator: {
+    userId: number
+    nickname: string
+  }
+  tracks: Track[]
+  updateTime: number
+  trackCount: number
+  description: string
+  subscribed: boolean
+  privacy: number
+}
+
+interface PlaylistDetailRes {
+  code: number
+  playlist: PlaylistDetail
+  privileges: Privilege[]
+}
+
+interface DetailParams {
+  id: number
+  timestamp?: number
+}
+
+/**
+ * 获取歌单详情
+ * 说明 : 歌单能看到歌单名字, 但看不到具体歌单内容 , 调用此接口 , 传入歌单 id, 可以获取对应歌单内的所有的音乐(未登录状态只能获取不完整的歌单,登录后是完整的)，
+ * 但是返回的trackIds是完整的，tracks 则是不完整的，可拿全部 trackIds 请求一次 song/detail 接口
+ * 获取所有歌曲的详情 (https://github.com/Binaryify/NeteaseCloudMusicApi/issues/452)
+ * - id : 歌单 id
+ * - s : 歌单最近的 s 个收藏者, 默认为8
+ * @param {number} id
+ * @param {boolean=} noCache
+ */
+export function getPlaylistDetail(
+  id: number,
+  noCache = false,
+  options?: UseFetchOptions<PlaylistDetailRes>
+) {
+  let params: DetailParams = { id }
+  if (noCache) params.timestamp = new Date().getTime()
+  return useHttp.get<PlaylistDetailRes>(PLAYLIST_URL.detail, params, {
+    ...options,
+    transform(data) {
+      if (data.playlist) {
+        data.playlist.tracks = mapTrackPlayableStatus(
+          data.playlist.tracks,
+          data.privileges || []
+        )
+      }
+      return data
+    },
   })
 }
