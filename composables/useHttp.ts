@@ -30,7 +30,7 @@ function fetch<T>(url: UrlType, opts: UseFetchOptions<T>) {
   const options = opts
   options.lazy = options.lazy ?? true
 
-  const { apiBase } = useRuntimeConfig().public
+  const { apiBase, prefix } = useRuntimeConfig().public
 
   return useFetch(url, {
     // Request interception
@@ -38,7 +38,7 @@ function fetch<T>(url: UrlType, opts: UseFetchOptions<T>) {
       console.log(process.client, process.server)
       let baseUrl = ""
       if (process.client) {
-        baseUrl = "/api"
+        baseUrl = prefix
       } else if (process.server) {
         baseUrl = apiBase
       }

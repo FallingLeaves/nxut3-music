@@ -1,5 +1,12 @@
 import type { UseFetchOptions } from "#app"
 
+export const PLAYLIST_URL = {
+  recommend: "/personalized",
+  toplist: "/toplist",
+  highquality: "/top/playlist/highquality",
+  playlist: "/top/playlist",
+}
+
 interface Params {
   limit?: number
 }
@@ -12,7 +19,7 @@ interface RecommendItem {
   trackCount: number
 }
 
-interface RecommendRes {
+export interface RecommendRes {
   code: number
   result: RecommendItem[]
 }
@@ -29,7 +36,9 @@ export function getRecommendPlaylist(
   params?: Params,
   options?: UseFetchOptions<RecommendRes>
 ) {
-  return useHttp.get<RecommendRes>("/personalized", params, { ...options })
+  return useHttp.get<RecommendRes>(PLAYLIST_URL.recommend, params, {
+    ...options,
+  })
 }
 
 interface TopItem {
@@ -39,7 +48,7 @@ interface TopItem {
   id: number
 }
 
-interface TopListRes {
+export interface TopListRes {
   code: number
   list: TopItem[]
 }
@@ -49,5 +58,85 @@ interface TopListRes {
  * 说明 : 调用此接口,可获取所有榜单 接口地址 : /toplist
  */
 export function getToplists(options?: UseFetchOptions<TopListRes>) {
-  return useHttp.get<TopListRes>("/toplist", undefined, { ...options })
+  return useHttp.get<TopListRes>(PLAYLIST_URL.toplist, undefined, {
+    ...options,
+  })
+}
+
+interface HighQualityParams extends Params {
+  cat?: string
+  before?: number
+}
+
+interface HighQualityItem {
+  id: number
+  name: string
+  playCount: number
+  coverImgUrl: string
+}
+
+export interface HighQualityRes {
+  code: number
+  more: boolean
+  total: number
+  playlists: HighQualityItem[]
+}
+
+/**
+ * 获取精品歌单
+ * 说明 : 调用此接口 , 可获取精品歌单
+ * - cat: tag, 比如 " 华语 "、" 古风 " 、" 欧美 "、" 流行 ", 默认为 "全部", 可从精品歌单标签列表接口获取(/playlist/highquality/tags)
+ * - limit: 取出歌单数量 , 默认为 20
+ * - before: 分页参数,取上一页最后一个歌单的 updateTime 获取下一页数据
+ * @param {Object} params
+ * @param {string} params.cat
+ * @param {number=} params.limit
+ * @param {number} params.before
+ */
+export function getHighQualityPlaylist(
+  params?: HighQualityParams,
+  options?: UseFetchOptions<HighQualityRes>
+) {
+  return useHttp.get<HighQualityRes>(PLAYLIST_URL.highquality, params, {
+    ...options,
+  })
+}
+
+interface TopPlayParams extends Params {
+  order?: "new" | "hot"
+  cat?: string
+  offset?: number
+}
+
+interface TopPlayItem {
+  id: number
+  coverImgUrl: string
+  name: string
+}
+
+export interface TopPlayRes {
+  code: number
+  more: boolean
+  total: number
+  playlists: TopPlayItem[]
+}
+
+/**
+ * 歌单 ( 网友精选碟 )
+ * 说明 : 调用此接口 , 可获取网友精选碟歌单
+ * - order: 可选值为 'new' 和 'hot', 分别对应最新和最热 , 默认为 'hot'
+ * - cat: tag, 比如 " 华语 "、" 古风 " 、" 欧美 "、" 流行 ", 默认为 "全部",可从歌单分类接口获取(/playlist/catlist)
+ * - limit: 取出歌单数量 , 默认为 50
+ * @param {Object} params
+ * @param {string} params.order
+ * @param {string} params.cat
+ * @param {number=} params.limit
+ */
+export function getTopPlaylist(
+  params?: TopPlayParams,
+  options?: UseFetchOptions<TopPlayRes>
+) {
+  return useHttp.get<TopPlayRes>(PLAYLIST_URL.playlist, params, {
+    ...options,
+  })
 }

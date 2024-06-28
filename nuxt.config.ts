@@ -27,6 +27,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE, // 服务器地址
+      prefix: process.env.NUXT_PUBLIC_PREFIX, // 前缀
     },
   },
   nitro: {

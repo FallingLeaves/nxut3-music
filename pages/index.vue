@@ -49,7 +49,7 @@ const getRandomArtist = (list: any[]) => {
 const { data: allArtistList } = await getToplistOfArtists()
 
 const topArtistList = computed(() => {
-  return getRandomArtist(allArtistList.value.list.artists)
+  return getRandomArtist(allArtistList.value?.list.artists || [])
 })
 
 const { data: albumNewestlist } = await getNewAlbums({ limit: 10, area: "ALL" })
@@ -57,7 +57,7 @@ const { data: albumNewestlist } = await getNewAlbums({ limit: 10, area: "ALL" })
 const { data: allTopList } = await getToplists()
 
 const top5List = computed(() => {
-  return allTopList.value.list.slice(0, 5)
+  return allTopList.value?.list.slice(0, 5)
 })
 </script>
 
@@ -112,7 +112,7 @@ const top5List = computed(() => {
       </div>
       <CoverRow
         type="playlist"
-        :items="top5List"
+        :items="top5List || []"
         sub-text="updateFrequency"
         :image-size="1024"
       />
