@@ -20,7 +20,11 @@
       </div>
     </div>
 
-    <div v-show="showCatOptions" class="panel">
+    <div
+      v-show="showCatOptions"
+      class="panel"
+      v-click-outside="panelClickOutside"
+    >
       <div v-for="bigCat in allBigCats" :key="bigCat" class="big-cat">
         <div class="name">{{ bigCat }}</div>
         <div class="cats">
@@ -31,6 +35,7 @@
             :class="{
               active: enabledPlaylistCategories.includes(cat.name),
             }"
+            @click="toggleCat(cat.name)"
           >
             <span>{{ cat.name }}</span>
           </div>
@@ -80,9 +85,11 @@ import {
   type TopPlayRes,
 } from "~/api/playList"
 
-const enabledPlaylistCategories = playlistCategories
-  .filter((c) => c.enable)
-  .map((c) => c.name)
+const settingStore = useSettingStore()
+
+const enabledPlaylistCategories = computed(() => {
+  return settingStore.enabledPlaylistCategories
+})
 
 const activeCategory = ref("全部")
 const showCatOptions = ref(false)
@@ -218,6 +225,28 @@ watch(
     getData()
   }
 )
+
+const toggleCat = (name: string) => {
+  const enabledPlaylistCategories = settingStore.enabledPlaylistCategories
+  const index = enabledPlaylistCategories.findIndex((v) => {
+    return v === name
+  })
+  if (index !== -1) {
+    enabledPlaylistCategories.splice(index, 1)
+  } else {
+    enabledPlaylistCategories.push(name)
+  }
+  settingStore.changeSetting({
+    key: "enabledPlaylistCategories",
+    value: enabledPlaylistCategories,
+  })
+}
+
+const panelClickOutside = () => {
+  if (showCatOptions.value) {
+    showCatOptions.value = false
+  }
+}
 </script>
 
 <style lang="scss" scoped>
