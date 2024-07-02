@@ -87,11 +87,27 @@
       </div>
       <div v-if="album?.company" class="copyright">© {{ album.company }}</div>
     </div>
+    <div v-if="filterMoreAlbums.length !== 0" class="more-by">
+      <div class="section-title">
+        More by
+        <NuxtLink :to="`/artist/${album?.artist.id}`">
+          {{ album?.artist.name }}
+        </NuxtLink>
+      </div>
+      <div>
+        <CoverRow
+          type="album"
+          :items="filterMoreAlbums"
+          sub-text="albumType+releaseYear"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { getAlbumDetail, getDynamicAlbum } from "~/api/album"
+import { getAlbumDetail, getDynamicAlbum, type AlbumItem } from "~/api/album"
+import { getArtistAlbum } from "~/api/artist"
 import type { Track } from "~/api/playList"
 import { getTrackDetail } from "~/api/track"
 
@@ -136,12 +152,40 @@ watch(
         tracks.value = data.songs
       })
     }
+    if (res?.album) {
+      const id = res.album.artist.id + ""
+      getArtistAlbum({ id, limit: 100 }).then(({ data }) => {
+        if (data.value) {
+          moreAlbums.value = data.value.hotAlbums
+        }
+      })
+    }
   },
   { immediate: true }
 )
 
 const album = computed(() => {
   return data.value?.album
+})
+
+const moreAlbums = ref<AlbumItem[]>([])
+
+const filterMoreAlbums = computed(() => {
+  let more = moreAlbums.value.filter((v) => v.id !== album.value?.id)
+  let real = more.filter((v) => v.type === "专辑")
+  let eps = more.filter(
+    (v) => v.type === "EP" || (v.type === "EP/Single" && v.size > 1)
+  )
+  let restItems = more.filter(
+    (v) =>
+      real.find((a) => a.id === v.id) === undefined &&
+      eps.find((a) => a.id === v.id) === undefined
+  )
+  if (real.length === 0) {
+    return [...real, ...eps, ...restItems].slice(0, 5)
+  } else {
+    return [...real, ...restItems].slice(0, 5)
+  }
 })
 
 const { data: dynamicDetail } = await getDynamicAlbum(id + "", {

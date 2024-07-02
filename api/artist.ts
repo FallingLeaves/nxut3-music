@@ -1,4 +1,10 @@
 import type { UseFetchOptions } from "#app"
+import type { AlbumItem } from "./album"
+
+export const AETIST_URL = {
+  artist: "/toplist/artist",
+  album: "/artist/album",
+}
 
 type Area = 1 | 2 | 3 | 4 | null
 
@@ -38,5 +44,36 @@ export function getToplistOfArtists(
   if (type) {
     params.type = type
   }
-  return useHttp.get<ArtlistRes>("/toplist/artist", params, { ...options })
+  return useHttp.get<ArtlistRes>(AETIST_URL.artist, params, { ...options })
+}
+
+interface ArtistAlbumParams {
+  id: string
+  limit?: number
+  offset?: number
+}
+
+interface ArtistAlbumRes {
+  code: number
+  artist: ArtlistItem
+  more: boolean
+  hotAlbums: AlbumItem[]
+}
+
+/**
+ * 获取歌手专辑
+ * 说明 : 调用此接口 , 传入歌手 id, 可获得歌手专辑内容
+ * - id: 歌手 id
+ * - limit: 取出数量 , 默认为 50
+ * - offset: 偏移数量 , 用于分页 , 如 :( 页数 -1)*50, 其中 50 为 limit 的值 , 默认为 0
+ * @param {Object} params
+ * @param {number} params.id
+ * @param {number=} params.limit
+ * @param {number=} params.offset
+ */
+export const getArtistAlbum = (
+  params: ArtistAlbumParams,
+  options?: UseFetchOptions<ArtistAlbumRes>
+) => {
+  return useHttp.get<ArtistAlbumRes>(AETIST_URL.album, params, { ...options })
 }
