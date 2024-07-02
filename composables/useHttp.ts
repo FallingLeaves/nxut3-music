@@ -35,7 +35,7 @@ function fetch<T>(url: UrlType, opts: UseFetchOptions<T>) {
   return useFetch(url, {
     // Request interception
     onRequest({ options }) {
-      console.log(process.client, process.server)
+      // console.log(process.client, process.server)
       let baseUrl = ""
       if (process.client) {
         baseUrl = prefix

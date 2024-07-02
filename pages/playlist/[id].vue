@@ -40,7 +40,7 @@
         </div>
         <div class="date-and-count">
           最后更新于
-          {{ playlist.updateTime }} · {{ playlist.trackCount }}
+          {{ formatDate(playlist.updateTime) }} · {{ playlist.trackCount }}
           首歌
         </div>
         <div class="description">
@@ -69,11 +69,53 @@
         </div>
       </div>
     </div>
+    <div
+      v-if="specialPlaylistInfo !== undefined && playlist"
+      class="special-playlist"
+    >
+      <div class="title" :class="specialPlaylistInfo.gradient">
+        {{ specialPlaylistInfo.name }}
+      </div>
+      <div class="subtitle">
+        {{ playlist.englishTitle }} · {{ playlist.updateFrequency }}
+      </div>
+
+      <div class="buttons">
+        <ButtonTwoTone class="play-button" icon-class="play" color="grey">
+          播放
+        </ButtonTwoTone>
+        <ButtonTwoTone
+          :icon-class="playlist.subscribed ? 'heart-solid' : 'heart'"
+          :icon-button="true"
+          :horizontal-padding="0"
+          :color="playlist.subscribed ? 'blue' : 'grey'"
+          :text-color="playlist.subscribed ? '#335eea' : ''"
+          :background-color="
+            playlist.subscribed ? 'var(--color-secondary-bg)' : ''
+          "
+        >
+        </ButtonTwoTone>
+        <ButtonTwoTone
+          icon-class="more"
+          :icon-button="true"
+          :horizontal-padding="0"
+          color="grey"
+        >
+        </ButtonTwoTone>
+      </div>
+    </div>
+
+    <TrackList :id="playlist?.id" :tracks="filteredTracks" type="playlist" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { getPlaylistDetail } from "~/api/playList"
+import {
+  getPlaylistDetail,
+  type PlaylistDetail,
+  type Track,
+} from "~/api/playList"
+import { getTrackDetail } from "~/api/track"
 import { appleMusicIds } from "~/utils/staticData"
 
 const route = useRoute()
@@ -83,12 +125,73 @@ const {
 
 const loading = ref(true)
 
+const searchKeyWords = ref("")
+
+const tracks = ref<Track[]>([])
+const playlist = ref<PlaylistDetail>()
+let lastLoadedTrackIndex = 9
+const hasMore = ref(false)
+const loadingMore = ref(false)
+
+const loadMore = (loadNum: number = 100) => {
+  let trackIds = playlist.value?.trackIds?.filter((t, index) => {
+    if (
+      index > lastLoadedTrackIndex &&
+      index <= lastLoadedTrackIndex + loadNum
+    ) {
+      return t
+    }
+  })
+  trackIds = trackIds?.map((v) => v.id)
+  getTrackDetail(trackIds?.join(",")!).then((data) => {
+    if (data) {
+      tracks.value.push(...data?.songs)
+      lastLoadedTrackIndex += trackIds?.length!
+      loadingMore.value = false
+      if (lastLoadedTrackIndex + 1 === playlist.value?.trackIds?.length) {
+        hasMore.value = false
+      } else {
+        hasMore.value = true
+      }
+    }
+  })
+}
+
 const { data } = await getPlaylistDetail(+id)
+
+watch(
+  () => data.value,
+  (res) => {
+    tracks.value = res?.playlist.tracks
+    playlist.value = res?.playlist
+    lastLoadedTrackIndex = tracks.value?.length - 1
+    if (res?.playlist?.trackCount > tracks.value?.length) {
+      loadingMore.value = true
+      loadMore()
+    }
+  },
+  { immediate: true }
+)
 
 loading.value = false
 
-const playlist = computed(() => {
-  return data.value?.playlist
+const filteredTracks = computed(() => {
+  return tracks.value?.filter(
+    (track) =>
+      (track.name &&
+        track.name
+          .toLowerCase()
+          .includes(searchKeyWords.value.toLowerCase())) ||
+      (track.al.name &&
+        track.al.name
+          .toLowerCase()
+          .includes(searchKeyWords.value.toLowerCase())) ||
+      track.ar.find(
+        (artist) =>
+          artist.name &&
+          artist.name.toLowerCase().includes(searchKeyWords.value.toLowerCase())
+      )
+  )
 })
 
 const specialPlaylistInfo = computed(() => {

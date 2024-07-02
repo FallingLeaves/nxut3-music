@@ -1,6 +1,9 @@
 interface Setting {
   enabledPlaylistCategories: string[]
   musicLanguage: string
+  subTitleDefault: boolean
+  cacheLimit: number | false
+  [key: string]: any
 }
 
 interface Payload {
@@ -16,6 +19,8 @@ export const useSettingStore = defineStore("setting", {
   state: (): Setting => ({
     enabledPlaylistCategories,
     musicLanguage: "all",
+    subTitleDefault: false,
+    cacheLimit: 8192,
   }),
   actions: {
     CHANGE_SETTING({ key, value }: Payload) {

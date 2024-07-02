@@ -149,13 +149,20 @@ export interface Track {
   id: number
   playable?: boolean
   reason?: string
+  simpleSong?: any
+  al?: any
+  album?: any
+  tns?: any[]
+  name?: string
+  ar: any[]
 }
 
 export interface Privilege {
   id: number
+  [key: string]: any
 }
 
-interface PlaylistDetail {
+export interface PlaylistDetail {
   id: number
   name: string
   coverImgUrl: string
@@ -169,6 +176,10 @@ interface PlaylistDetail {
   description: string
   subscribed: boolean
   privacy: number
+  englishTitle?: string
+  updateFrequency?: string
+  trackIds?: any[]
+  [key: string]: any
 }
 
 interface PlaylistDetailRes {
