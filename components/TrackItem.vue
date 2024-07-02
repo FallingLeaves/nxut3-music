@@ -35,7 +35,13 @@
           <span v-if="isSubTitle" :title="subTitle" class="sub-title">
             ({{ subTitle }})
           </span>
-          <span v-if="isAlbum" class="featured"> </span>
+          <span v-if="isAlbum" class="featured">
+            <ArtistsInline
+              :artists="track.ar"
+              :exclude="parent.albumObject.artist.name"
+              prefix="-"
+            />
+          </span>
           <span
             v-if="isAlbum && track.mark === 1318912"
             class="explicit-symbol"
@@ -50,6 +56,7 @@
           >
             <ExplicitSymbol :size="15" />
           </span>
+          <ArtistsInline :artists="artists" />
         </div>
       </div>
       <div></div>
@@ -195,6 +202,13 @@ const showLikeButton = computed(() => {
 
 const isLiked = computed(() => {
   return false
+})
+
+const artists = computed(() => {
+  const { ar, artists } = track.value
+  if (!isNil(ar)) return ar
+  if (!isNil(artists)) return artists
+  return []
 })
 </script>
 

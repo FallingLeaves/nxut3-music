@@ -16,6 +16,7 @@ export default defineNuxtConfig({
       },
     ],
     "@nuxt/image",
+    "nuxt-lodash",
   ],
   vite: {
     plugins: [

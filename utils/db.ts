@@ -1,10 +1,11 @@
 import Dexie, { type EntityTable } from "dexie"
+import type { AlbumDetailRes } from "~/api/album"
 import type { Privilege, Track } from "~/api/playList"
 
 interface TrackDetail {
   id: number
   updateTime: number
-  detail: any
+  detail: Track
   privileges: any
 }
 
@@ -17,7 +18,7 @@ interface Lyric {
 interface Album {
   id: number
   updateTime: number
-  album: any
+  album: AlbumDetailRes
 }
 
 const db = new Dexie("nuxtmusic") as Dexie & {
@@ -91,5 +92,22 @@ export const cacheTrackDetail = (track: Track, privileges: Privilege) => {
     detail: track,
     privileges: privileges,
     updateTime: new Date().getTime(),
+  })
+}
+
+export const cacheAlbum = (id: number, album: AlbumDetailRes) => {
+  db.album.put({
+    id: +id,
+    album,
+    updateTime: new Date().getTime(),
+  })
+}
+
+export const getAlbumFromCache = (id: number) => {
+  return db.album.get(+id).then((result) => {
+    if (!result) {
+      return null
+    }
+    return result.album
   })
 }

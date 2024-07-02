@@ -155,6 +155,7 @@ export interface Track {
   tns?: any[]
   name?: string
   ar: any[]
+  dt: number
 }
 
 export interface Privilege {

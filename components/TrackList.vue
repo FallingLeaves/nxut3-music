@@ -16,6 +16,12 @@
 import type { CSSProperties } from "vue"
 import type { Track } from "~/api/playList"
 
+interface AlbumObject {
+  artist: {
+    name: string
+  }
+}
+
 interface Props {
   tracks: Track[]
   type: "tracklist" | "album" | "playlist" | "cloudDisk"
@@ -23,6 +29,7 @@ interface Props {
   columnNumber?: number
   itemKey?: string
   highlightPlayingTrack?: boolean
+  albumObject?: AlbumObject
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -32,6 +39,11 @@ const props = withDefaults(defineProps<Props>(), {
   columnNumber: 4,
   itemKey: "id",
   highlightPlayingTrack: true,
+  albumObject: () => {
+    return {
+      artist: { name: "" },
+    }
+  },
 })
 
 const listStyles = computed(() => {

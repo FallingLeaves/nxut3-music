@@ -1,9 +1,25 @@
 import type { UseFetchOptions } from "#app"
+import type { ArtlistItem } from "./artist"
+import type { Track } from "./playList"
 
-interface AlbumItem {
+export const ALBUM_URL = {
+  newest: "/album/newest",
+  new: "/album/new",
+  detail: "/album",
+  dynamic: "/album/detail/dynamic",
+}
+
+export interface AlbumItem {
   id: number
   name: string
   picUrl: string
+  artist: ArtlistItem
+  type: string
+  publishTime: number
+  mark: number
+  size: number
+  description: string
+  company?: string
 }
 
 interface AlbumNewestRes {
@@ -18,7 +34,9 @@ interface AlbumNewestRes {
  */
 
 export function getAlbumNewest(options?: UseFetchOptions<AlbumNewestRes>) {
-  return useHttp.get<AlbumNewestRes>("/album/newest", undefined, { ...options })
+  return useHttp.get<AlbumNewestRes>(ALBUM_URL.newest, undefined, {
+    ...options,
+  })
 }
 
 interface Params {
@@ -42,5 +60,63 @@ export function getNewAlbums(
   params: Params,
   options?: UseFetchOptions<AlbumNewestRes>
 ) {
-  return useHttp.get<AlbumNewestRes>("/album/new", params, { ...options })
+  return useHttp.get<AlbumNewestRes>(ALBUM_URL.new, params, { ...options })
+}
+
+export interface AlbumDetailRes {
+  code: number
+  album: AlbumItem
+  songs: Track[]
+}
+
+/**
+ * 获取专辑内容
+ * 说明 : 调用此接口 , 传入专辑 id, 可获得专辑内容
+ * @param {number} id
+ */
+export async function getAlbumDetail(
+  id: string,
+  options?: UseFetchOptions<AlbumDetailRes>
+) {
+  const fetchLatest = () => {
+    return useHttp.get<AlbumDetailRes>(
+      ALBUM_URL.detail,
+      { id },
+      {
+        ...options,
+        transform(res) {
+          cacheAlbum(+id, res)
+          res.songs = mapTrackPlayableStatus(res.songs)
+          return res
+        },
+      }
+    )
+  }
+
+  fetchLatest()
+
+  const result = await getAlbumFromCache(+id)
+
+  if (result) {
+    return result
+  }
+
+  const { data } = await fetchLatest()
+
+  return unref(data)
+}
+
+interface DynamicAlbumRes {
+  code: number
+  isSub: boolean
+}
+
+export const getDynamicAlbum = async (
+  id: string,
+  options?: UseFetchOptions<DynamicAlbumRes>
+) => {
+  const params = { id, timestamp: new Date().getTime() }
+  return useHttp.get<DynamicAlbumRes>(ALBUM_URL.dynamic, params, {
+    ...options,
+  })
 }

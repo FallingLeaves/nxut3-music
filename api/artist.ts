@@ -6,7 +6,7 @@ interface Params {
   type?: Area
 }
 
-interface ArtlistItem {
+export interface ArtlistItem {
   id: number | string
   name: string
   img1v1Url: string
