@@ -97,7 +97,7 @@ const play = () => {}
 const router = useRouter()
 
 const goTo = () => {
-  router.push(`${props.type}/${props.id}`)
+  router.push(`/${props.type}/${props.id}`)
 }
 </script>
 
