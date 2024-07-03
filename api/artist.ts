@@ -21,10 +21,10 @@ export interface ArtlistItem {
   img1v1Url: string
   picUrl: string
   followed: boolean
-  musicSize: number
-  albumSize: number
-  mvSize: number
-  briefDesc: string
+  musicSize?: number
+  albumSize?: number
+  mvSize?: number
+  briefDesc?: string
 }
 
 interface ArtlistRes {

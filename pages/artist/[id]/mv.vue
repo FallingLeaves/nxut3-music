@@ -1,8 +1,8 @@
 <template>
   <div>
     <h1>
-      <NuxtImg class="avatar" :src="artist.img1v1Url" loading="lazy" />
-      {{ artist.name }}'s Music Videos
+      <NuxtImg class="avatar" :src="artist?.img1v1Url" loading="lazy" />
+      {{ artist?.name }}'s Music Videos
     </h1>
     <MvRow :mvs="mvs" subtitle="publishTime" />
     <div class="load-more">
