@@ -115,7 +115,7 @@
     <div v-if="mvs.length !== 0" id="mvs" class="mvs">
       <div class="section-title">
         MVs
-        <NuxtLink v-show="hasMoreMV" :to="`/artist/${artist.id}/mv`">
+        <NuxtLink v-show="hasMoreMV" :to="`/artist/${artist?.id}/mv`">
           查看全部
         </NuxtLink>
       </div>

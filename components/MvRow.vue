@@ -21,7 +21,7 @@
           <router-link :to="'/mv/' + getID(mv)">{{ getTitle(mv) }}</router-link>
         </div>
         <div class="artist">
-          <template v-if="subtitle === 'artist'">
+          <template v-if="subtitle === 'publishTime'">
             {{ mv.publishTime }}
           </template>
           <template v-else>
