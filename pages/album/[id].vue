@@ -118,7 +118,6 @@ const {
 
 const getData = (id: string) => {
   return useAsyncData(
-    id + "Detail",
     () => {
       return getAlbumDetail(id)
     },
@@ -154,11 +153,19 @@ watch(
     }
     if (res?.album) {
       const id = res.album.artist.id + ""
-      getArtistAlbum({ id, limit: 100 }).then(({ data }) => {
-        if (data.value) {
-          moreAlbums.value = data.value.hotAlbums
+      getArtistAlbum({ id, limit: 100 }, { key: id + "getArtistAlbum" }).then(
+        ({ data }) => {
+          watch(
+            () => data.value,
+            (res) => {
+              if (res) {
+                moreAlbums.value = res.hotAlbums
+              }
+            },
+            { immediate: true }
+          )
         }
-      })
+      )
     }
   },
   { immediate: true }
@@ -189,7 +196,7 @@ const filterMoreAlbums = computed(() => {
 })
 
 const { data: dynamicDetail } = await getDynamicAlbum(id + "", {
-  key: id + "DynamicAlbum",
+  key: id + "getDynamicAlbum",
 })
 
 const titleHandle = (title: string) => {
