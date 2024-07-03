@@ -1,3 +1,3 @@
 <template>
-  <div>歌手</div>
+  <div>MV详情</div>
 </template>

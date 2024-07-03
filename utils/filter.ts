@@ -2,7 +2,10 @@ import dayjs from "dayjs"
 import duration from "dayjs/plugin/duration"
 import relativeTime from "dayjs/plugin/relativeTime"
 
-export const formatDate = (timestamp: number, format = "YYYY年MM月DD日") => {
+export const formatDate = (
+  timestamp: number | string,
+  format = "YYYY年MM月DD日"
+) => {
   if (!timestamp) return ""
   return dayjs(timestamp).format(format)
 }

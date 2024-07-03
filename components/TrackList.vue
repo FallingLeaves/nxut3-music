@@ -25,7 +25,7 @@ interface AlbumObject {
 interface Props {
   tracks: Track[]
   type: "tracklist" | "album" | "playlist" | "cloudDisk"
-  id: number
+  id?: number
   columnNumber?: number
   itemKey?: string
   highlightPlayingTrack?: boolean

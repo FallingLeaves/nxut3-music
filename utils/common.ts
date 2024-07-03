@@ -1,3 +1,4 @@
+import type { AlbumItem } from "~/api/album"
 import type { Track, Privilege } from "~/api/playList"
 
 const isAccountLoggedIn = () => false
@@ -124,5 +125,18 @@ export function splitAlbumTitle(title: string) {
   return {
     title: title,
     subtitle: "",
+  }
+}
+
+export const formatAlbumType = (type: string, album: AlbumItem) => {
+  if (!type) return ""
+  if (type === "EP/Single") {
+    return album.size === 1 ? "Single" : "EP"
+  } else if (type === "Single") {
+    return "Single"
+  } else if (type === "专辑") {
+    return "Album"
+  } else {
+    return type
   }
 }
