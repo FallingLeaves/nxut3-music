@@ -13,4 +13,8 @@ useHead({
   meta: [{ name: "description", content: "My amazing site." }],
   script: [{ innerHTML: "console.log('Hello world')" }],
 })
+
+const playerStore = usePlayerStore()
+const p = new Player()
+playerStore.setPlayer(p)
 </script>

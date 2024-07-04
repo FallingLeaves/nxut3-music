@@ -14,13 +14,10 @@
 </template>
 
 <script setup lang="ts">
-interface Artist {
-  id: number
-  name: string
-}
+import type { ArtlistItem } from "~/api/artist"
 
 interface Props {
-  artists: Artist[]
+  artists: ArtlistItem[]
   exclude?: string
   prefix?: string
 }

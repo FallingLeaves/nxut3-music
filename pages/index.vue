@@ -84,6 +84,13 @@ const top5List = computed(() => {
       />
     </div>
     <div class="index-row">
+      <div class="title">For You</div>
+      <div class="for-you-row">
+        <DailyTracksCard ref="DailyTracksCard" />
+        <FMCard />
+      </div>
+    </div>
+    <div class="index-row">
       <div class="title">推荐艺人</div>
       <!-- ClientOnly 随机值导致服务端和客户端topArtistList不一致 Hydration completed but contains mismatches -->
       <ClientOnly>
