@@ -87,7 +87,9 @@ const top5List = computed(() => {
       <div class="title">For You</div>
       <div class="for-you-row">
         <DailyTracksCard ref="DailyTracksCard" />
-        <FMCard />
+        <ClientOnly>
+          <FMCard />
+        </ClientOnly>
       </div>
     </div>
     <div class="index-row">

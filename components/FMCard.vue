@@ -1,7 +1,17 @@
 <template>
   <div class="fm" :style="{ background }" data-theme="dark" v-if="player">
-    <NuxtImg :src="nextTrackCover" style="display: none" loading="lazy" />
-    <NuxtImg class="cover" :src="track?.album.picUrl" loading="lazy" />
+    <NuxtImg
+      v-if="player.personalFMNextTrack"
+      :src="nextTrackCover"
+      style="display: none"
+      loading="lazy"
+    />
+    <NuxtImg
+      v-if="track?.album.picUrl"
+      class="cover"
+      :src="track?.album.picUrl"
+      loading="lazy"
+    />
     <div class="right-part">
       <div class="info">
         <div class="title">{{ track?.name }}</div>

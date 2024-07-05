@@ -1,8 +1,9 @@
 import type { FetchOptions } from "ofetch"
 
-function fetch<T>(url: string, opt: FetchOptions) {
+function fetch<T>(url: string, opt?: any) {
   const { apiBase, prefix } = useRuntimeConfig().public
   return $fetch<T>(url, {
+    ...opt,
     /** 请求拦截器 */
     onRequest: ({ options }) => {
       let baseUrl = ""

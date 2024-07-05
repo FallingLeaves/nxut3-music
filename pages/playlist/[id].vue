@@ -162,12 +162,14 @@ const { data } = await getPlaylistDetail(+id)
 watch(
   () => data.value,
   (res) => {
-    tracks.value = res?.playlist.tracks
-    playlist.value = res?.playlist
-    lastLoadedTrackIndex = tracks.value?.length - 1
-    if (res?.playlist?.trackCount > tracks.value?.length) {
-      loadingMore.value = true
-      loadMore()
+    if (res) {
+      tracks.value = res?.playlist.tracks
+      playlist.value = res?.playlist
+      lastLoadedTrackIndex = tracks.value?.length - 1
+      if (res?.playlist?.trackCount > tracks.value?.length) {
+        loadingMore.value = true
+        loadMore()
+      }
     }
   },
   { immediate: true }

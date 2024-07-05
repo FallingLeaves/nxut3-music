@@ -1,5 +1,6 @@
 import { createSvgIconsPlugin } from "vite-plugin-svg-icons"
 import path from "path"
+import { execSync } from "child_process"
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -46,4 +47,9 @@ export default defineNuxtConfig({
     //   },
     // },
   },
+  // hooks: {
+  //   "build:before": () => {
+  //     execSync("node server/generateImports.js", { stdio: "inherit" }) // 生成module下的index
+  //   },
+  // },
 })

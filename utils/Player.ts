@@ -51,7 +51,7 @@ export default class Player {
   createdBlobRecords: string[] = []
 
   constructor() {
-    this._init()
+    // this._init()
   }
 
   get repeatMode() {
@@ -170,7 +170,7 @@ export default class Player {
     }
   }
 
-  private _init() {
+  async _init() {
     if (this._howler) {
       this._howler?.volume(this.volume)
     }
@@ -180,10 +180,10 @@ export default class Player {
       !this._personalFMNextTrack ||
       this._personalFMTrack?.id === this._personalFMNextTrack?.id
     ) {
-      getPersonFMClient().then((data) => {
-        this._personalFMTrack = data.data[0]
-        this._personalFMNextTrack = data.data[1]
-      })
+      // 不知道为什么只有一条数据
+      const data = await getPersonFMClient()
+      this._personalFMTrack = data.data[0]
+      this._personalFMNextTrack = data.data[1]
     }
   }
 

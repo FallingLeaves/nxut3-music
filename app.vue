@@ -16,5 +16,6 @@ useHead({
 
 const playerStore = usePlayerStore()
 const p = new Player()
+await p._init()
 playerStore.setPlayer(p)
 </script>
